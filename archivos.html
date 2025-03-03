@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor de Archivos - CazorlaTools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-green-400 font-mono">
+    <header class="bg-green-800 text-black p-6 text-center shadow-lg border-b-4 border-green-400">
+        <h1 class="text-4xl font-bold">Conversor de Archivos</h1>
+        <p class="text-lg">Convierte archivos entre distintos formatos.</p>
+    </header>
+
+    <div class="container mx-auto mt-8 p-6">
+        <input type="file" id="fileInput" class="w-full p-3 bg-gray-900 text-green-300 border border-green-600 rounded-lg">
+        <select id="formatSelect" class="w-full mt-3 p-2 bg-gray-900 text-green-300 border border-green-600 rounded-lg">
+            <option value="txt">TXT</option>
+            <option value="pdf">PDF</option>
+            <option value="json">JSON</option>
+        </select>
+        <button onclick="convertFile()" class="mt-3 bg-green-600 text-black px-4 py-2 rounded-lg hover:bg-green-700">Convertir</button>
+        <p id="statusMessage" class="mt-3 text-center"></p>
+        <div id="downloadSection" class="hidden flex justify-center space-x-4 mt-4">
+            <a id="downloadLink" class="bg-blue-600 text-black px-4 py-2 rounded-lg hover:bg-blue-700" download>Descargar Archivo</a>
+        </div>
+        <div class="flex justify-center space-x-4 mt-4">
+            <a href="index.html" class="bg-gray-600 text-black px-4 py-2 rounded-lg hover:bg-gray-700">Volver</a>
+        </div>
+    </div>
+
+    <footer class="bg-black text-green-400 text-center p-4 mt-10 border-t border-green-600">
+        <p>&copy; 2025 CazorlaTools. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function convertFile() {
+            let fileInput = document.getElementById("fileInput").files[0];
+            let format = document.getElementById("formatSelect").value;
+            let statusMessage = document.getElementById("statusMessage");
+            let downloadSection = document.getElementById("downloadSection");
+            let downloadLink = document.getElementById("downloadLink");
+
+            if (!fileInput) {
+                statusMessage.innerText = "Por favor, selecciona un archivo.";
+                return;
+            }
+
+            let reader = new FileReader();
+            reader.onload = function(event) {
+                let content = event.target.result;
+                let convertedContent = content; 
+                let fileName = fileInput.name.split('.').slice(0, -1).join('.') + "." + format;
+                let mimeType = "text/plain"; 
+
+                if (format === "json") {
+                    convertedContent = JSON.stringify({ content: content }, null, 2);
+                    mimeType = "application/json";
+                } else if (format === "pdf") {
+                    statusMessage.innerText = "Conversión a PDF no soportada en este momento.";
+                    return;
+                }
+
+                let blob = new Blob([convertedContent], { type: mimeType });
+                let url = URL.createObjectURL(blob);
+
+                downloadLink.href = url;
+                downloadLink.download = fileName;
+                downloadSection.classList.remove("hidden");
+                statusMessage.innerText = "Conversión completada. Descarga tu archivo.";
+            };
+            reader.readAsText(fileInput);
+        }
+    </script>
+</body>
+</html>

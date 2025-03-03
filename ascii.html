@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador ASCII Art - CazorlaTools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/figlet/lib/figlet.js"></script>
+</head>
+<body class="bg-black text-green-400 font-mono">
+    <header class="bg-green-800 text-black p-6 text-center shadow-lg border-b-4 border-green-400">
+        <h1 class="text-4xl font-bold">Generador ASCII Art</h1>
+        <p class="text-lg">Convierte texto en arte ASCII.</p>
+    </header>
+
+    <div class="container mx-auto mt-8 p-6">
+        <input type="text" id="asciiInput" class="w-full p-3 bg-gray-900 text-green-300 border border-green-600 rounded-lg" placeholder="Introduce un texto">
+        <select id="asciiFont" class="w-full mt-3 p-2 bg-gray-900 text-green-300 border border-green-600 rounded-lg">
+            <option value="Standard">Estándar</option>
+            <option value="Big">Big</option>
+            <option value="Small">Small</option>
+            <option value="Slant">Slant</option>
+            <option value="Ghost">Ghost</option>
+        </select>
+        <button onclick="generateASCII()" class="mt-3 bg-green-600 text-black px-4 py-2 rounded-lg hover:bg-green-700">Generar</button>
+        <pre id="asciiOutput" class="mt-3 p-3 bg-gray-900 text-green-300 border border-green-600 rounded-lg overflow-x-auto whitespace-pre-wrap"></pre>
+        <div class="flex justify-center space-x-4 mt-4">
+            <button onclick="copyASCII()" class="bg-blue-600 text-black px-4 py-2 rounded-lg hover:bg-blue-700">Copiar</button>
+            <button onclick="clearASCII()" class="bg-red-600 text-black px-4 py-2 rounded-lg hover:bg-red-700">Limpiar</button>
+            <a href="index.html" class="bg-gray-600 text-black px-4 py-2 rounded-lg hover:bg-gray-700">Volver</a>
+        </div>
+    </div>
+
+    <footer class="bg-black text-green-400 text-center p-4 mt-10 border-t border-green-600">
+        <p>&copy; 2025 CazorlaTools. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function generateASCII() {
+            let text = document.getElementById("asciiInput").value;
+            let font = document.getElementById("asciiFont").value;
+    
+            if (text.trim() === "") {
+                document.getElementById("asciiOutput").innerText = "Introduce un texto para generar ASCII.";
+                return;
+            }
+    
+            // Cargar la fuente antes de usarla
+            figlet.defaults({ fontPath: "https://unpkg.com/figlet/fonts/" });
+            figlet.preloadFonts([font], function () {
+                figlet.text(text, { font: font }, function (err, asciiArt) {
+                    if (err) {
+                        console.error("Error generando ASCII Art:", err);
+                        document.getElementById("asciiOutput").innerText = "Error al generar ASCII.";
+                        return;
+                    }
+                    document.getElementById("asciiOutput").innerText = asciiArt;
+                });
+            });
+        }
+    
+        function copyASCII() {
+            let asciiText = document.getElementById("asciiOutput").innerText;
+            navigator.clipboard.writeText(asciiText).then(() => {
+                alert("Copiado al portapapeles");
+            });
+        }
+    
+        function clearASCII() {
+            document.getElementById("asciiInput").value = "";
+            document.getElementById("asciiOutput").innerText = "";
+        }
+    </script>    
+</body>
+</html>

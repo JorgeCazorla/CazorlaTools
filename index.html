@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CazorlaTools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-green-400 font-mono">
+    <!-- Pantalla de Inicio Retro -->
+    <div id="intro" class="fixed top-0 left-0 w-full h-full flex flex-col justify-center items-center bg-black text-green-400 text-lg">
+        <canvas id="matrixCanvas" class="absolute top-0 left-0 w-full h-full"></canvas>
+        <div class="relative z-10 text-center">
+            <p class="text-4xl font-bold">CazorlaTools</p>
+            <p class="mt-4">Cargando herramientas...</p>
+            <p id="loadingText" class="mt-2 text-sm">[░░░░░░░░░░░░░░░░] 0%</p>
+        </div>
+    </div>
+    
+    <header class="hidden bg-green-800 text-black p-6 text-center shadow-lg border-b-4 border-green-400">
+        <h1 class="text-4xl font-bold">CazorlaTools</h1>
+        <p class="text-lg">Herramientas para informáticos</p>
+    </header>
+    
+    <nav class="hidden bg-black p-4 flex justify-center space-x-6 text-green-400 border-b border-green-600">
+        <a href="acerca.html" class="hover:underline">Acerca de</a>
+    </nav>
+    
+    <div class="hidden container mx-auto mt-8 p-6">
+        <h2 class="text-3xl font-bold text-center text-green-300 border-b border-green-600 pb-2">Nuestras Herramientas</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+            <div class="bg-black p-6 rounded-lg shadow-md text-center border border-green-400">
+                <h3 class="text-xl font-semibold text-green-300">WordCounter</h3>
+                <p class="text-green-400">Cuenta palabras y caracteres</p>
+                <a href="wordcounter.html" class="mt-4 inline-block bg-green-600 text-black px-4 py-2 rounded-lg hover:bg-green-700">Usar</a>
+            </div>
+            
+            <div class="bg-black p-6 rounded-lg shadow-md text-center border border-green-400">
+                <h3 class="text-xl font-semibold text-green-300">Conversor a Binario</h3>
+                <p class="text-green-400">Convierte texto y números a binario.</p>
+                <a href="binario.html" class="mt-4 inline-block bg-green-600 text-black px-4 py-2 rounded-lg hover:bg-green-700">Usar</a>
+            </div>            
+            
+            <div class="bg-black p-6 rounded-lg shadow-md text-center border border-green-400">
+                <h3 class="text-xl font-semibold text-green-300">Generador ASCII Art</h3>
+                <p class="text-green-400">Convierte texto en arte ASCII.</p>
+                <a href="ascii.html" class="mt-4 inline-block bg-green-600 text-black px-4 py-2 rounded-lg hover:bg-green-700">Usar</a>
+            </div>            
+            
+            <div class="bg-black p-6 rounded-lg shadow-md text-center border border-green-400">
+                <h3 class="text-xl font-semibold text-green-300">Conversor de Archivos</h3>
+                <p class="text-green-400">Convierte archivos entre distintos formatos.</p>
+                <a href="archivos.html" class="mt-4 inline-block bg-green-600 text-black px-4 py-2 rounded-lg hover:bg-green-700">Usar</a>
+            </div>            
+        </div>
+    </div>
+    
+    <footer class="hidden bg-black text-green-400 text-center p-4 mt-10 border-t border-green-600">
+        <p>&copy; 2025 CazorlaTools. All rights reserved.</p>
+    </footer>
+    
+    <script>
+        // Efecto Matrix
+        const canvas = document.getElementById("matrixCanvas");
+        const ctx = canvas.getContext("2d");
+    
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    
+        const characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const fontSize = 16;
+        const columns = Math.floor(canvas.width / fontSize);
+        const drops = Array.from({ length: columns }, () => Math.floor(Math.random() * (canvas.height / fontSize) * 2.4));
+    
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+            ctx.fillStyle = "#0F0"; // Color verde Matrix
+            ctx.font = fontSize + "px monospace";
+    
+            for (let i = 0; i < drops.length; i++) {
+                const text = characters[Math.floor(Math.random() * characters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+    
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+    
+                drops[i]++;
+            }
+        }
+    
+        setInterval(drawMatrix, 50);
+    
+        // Barra de carga animada
+        let progress = 0;
+        let loadingText = document.getElementById("loadingText");
+        let interval = setInterval(() => {
+            progress += Math.floor(Math.random() * 15) + 10;  // Aumenta más rápido
+            if (progress > 100) progress = 100;
+            let bar = "[" + "█".repeat(progress / 5) + "░".repeat(20 - progress / 5) + "] " + progress + "%";
+            loadingText.innerText = bar;
+            if (progress >= 100) {
+                clearInterval(interval);
+                setTimeout(() => {
+                    document.getElementById("intro").classList.add("hidden");
+                    document.querySelector("header").classList.remove("hidden");
+                    document.querySelector("nav").classList.remove("hidden");
+                    document.querySelector(".container").classList.remove("hidden");
+                    document.querySelector("footer").classList.remove("hidden");
+                }, 500);  // Reduce el tiempo de espera final
+            }
+        }, 200);  // Reduce el intervalo para que la barra se actualice más rápido
+    </script>    
+</body>
+</html>
